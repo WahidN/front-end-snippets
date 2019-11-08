@@ -1,0 +1,31 @@
+const mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+
+const snippetSchema = new Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    description: {
+        type: String,
+        required: true,
+    },
+    code: {
+        type: String,
+        required: true
+    },
+    category: {
+        type: String,
+        required: true
+    },
+    likes: {
+        type: Number,
+        required: false
+    },
+    author: {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }
+});
+
+module.exports = mongoose.model('Snippet', snippetSchema);

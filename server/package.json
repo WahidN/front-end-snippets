@@ -1,0 +1,24 @@
+{
+  "name": "front-end-snippets",
+  "version": "1.0.0",
+  "keywords": [],
+  "homepage": "https://github.com/example-developer/example-project",
+  "browser": "/src/index.html",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/example-developer/example-project.git"
+  },
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^1.19.4"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongodb": "^3.3.3",
+    "mongoose": "^5.7.7"
+  }
+}
