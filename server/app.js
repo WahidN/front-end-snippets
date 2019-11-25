@@ -1,14 +1,35 @@
 const express = require('express');
 const path = require('path');
+const csrf = require("csurf");
+const session = require('express-session');
+const MongodbStore = require('connect-mongodb-session')(session);
 const app = express();
 const snippetRoutes = require('./routes/snippets');
+const adminRoutes = require('./routes/admin');
 const mongoose = require('mongoose');
+
+const MONGODB_URI = "mongodb+srv://fes-admin:d7zZ9dpvJBAPUVHb@fes-database-ub9vh.mongodb.net/snippets?&w=majority";
+const SESS_TIME = 1000 * 60 * 60 * 2; // two minutes
+const store = new MongodbStore({
+    uri: MONGODB_URI,
+    collection: 'sessions'
+});
 
 app.use(express.urlencoded({
     extended: false
 }));
-
 app.use(express.json());
+
+app.use(session({
+    resave: false,
+    saveUninitialized: false,
+    secret: 'sessionSecretToken',
+    cookie: {
+        maxAge: SESS_TIME,
+        secure: false
+    },
+    store: store
+}));
 
 // handle static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -21,7 +42,7 @@ app.use((req, res, next) => {
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
     // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Origin');
+    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Origin, Authorization');
     // Set to true if you need the website to include cookies in the requests sent
     // to the API (e.g. in case you use sessions)
     res.setHeader('Access-Control-Allow-Credentials', true);
@@ -29,30 +50,14 @@ app.use((req, res, next) => {
     next();
 });
 
+
 // Hande routes
 app.use('/', snippetRoutes);
-
-// handle 404 errors
-app.use((req, res, next) => {
-    const error = new Error('Not found');
-    error.status = 404;
-    next(error);
-});
-
-// handle other errors
-app.use((error, req, res, next) => {
-    res.status(error.status || 500);
-    res.json({
-        error: {
-            message: error.message
-        }
-    });
-});
-
+app.use('/', adminRoutes);
 
 // connect to DB
 mongoose
-    .connect('mongodb+srv://fes-admin:d7zZ9dpvJBAPUVHb@fes-database-ub9vh.mongodb.net/snippets?retryWrites=true&w=majority', {
+    .connect(MONGODB_URI, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
         useFindAndModify: false

@@ -1,0 +1,12 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,500,700|Roboto:400,700&display=swap');
+
+body,
+html {
+    font-family: $font-family-body;
+    font-size: 16px;
+}
+
+h1 {
+    font-size: map-get($font-sizes, fs-8);
+    font-weight: bold;
+}
