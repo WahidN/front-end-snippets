@@ -35,5 +35,6 @@ export default {
 .snippets__wrap {
   display: flex;
   flex-wrap: wrap;
+  margin-right: -20px;
 }
 </style>

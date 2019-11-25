@@ -7,9 +7,9 @@ const router = express.Router();
 
 router.get('/snippets', snippetController.getSnippets);
 
-router.get('/user-snippets', snippetController.getUserSnippets);
-
 router.get('/snippets/:id', snippetController.getSnippet);
+
+router.get('/user-snippets', isAuth, snippetController.getUserSnippets);
 
 router.post('/snippets', isAuth, snippetController.addSnippet);
 

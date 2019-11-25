@@ -14,6 +14,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Snippet'
     }],
+    likedPosts: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Snippet'
+    }],
     is_Admin: {
         type: Boolean
     }

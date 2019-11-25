@@ -129,5 +129,35 @@ export default {};
       }
     }
   }
+
+  @media screen and (max-width: 480px) {
+    top: auto;
+    left: 0;
+    right: 0;
+    max-width: 100%;
+    padding: 0;
+
+    ul {
+      flex-direction: row;
+      height: auto;
+      li {
+        flex: 1 1 25%;
+        .sidebar-link {
+          padding: $space-2;
+          height: 100%;
+          display: flex;
+          align-items: center;
+
+          svg {
+            width: 15px;
+          }
+
+          .material-icons {
+            font-size: map-get($font-sizes, "fs-5");
+          }
+        }
+      }
+    }
+  }
 }
 </style>

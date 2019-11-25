@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
+import cookie from "vue-cookie";
 
 const state = {
     selectedCategory: null,
@@ -36,7 +37,11 @@ const actions = {
         try {
             const {
                 data
-            } = await axios.get("http://localhost:3000/user-snippets");
+            } = await axios.get("http://localhost:3000/user-snippets", {
+                headers: {
+                    'Authorization': `Bearer ${cookie.get('token')}`
+                }
+            });
             commit('setUserSnippets', data);
         } catch (error) {
             console.log(error)

@@ -26,15 +26,6 @@ const routes = [{
     component: () => import("../views/Home.vue")
   },
   {
-    path: "/admin",
-    name: "dashboard",
-    meta: {
-      layout: "admin"
-    },
-    component: () => import("../views/AdminDashboard.vue"),
-    beforeEnter: ifAuthenticated
-  },
-  {
     path: "/login",
     name: "login",
     meta: {
@@ -53,11 +44,28 @@ const routes = [{
     beforeEnter: ifNotAuthenticated
   },
   {
+    path: "/admin",
+    name: "dashboard",
+    meta: {
+      layout: "admin"
+    },
+    component: () => import("../views/AdminDashboard.vue"),
+    beforeEnter: ifAuthenticated
+  },
+  {
     path: "/admin/submit",
     meta: {
       layout: "admin"
     },
     component: () => import("../views/SubmitSnippet.vue"),
+    beforeEnter: ifAuthenticated
+  },
+  {
+    path: "/admin/favorites",
+    meta: {
+      layout: "admin"
+    },
+    component: () => import("../views/Favorites.vue"),
     beforeEnter: ifAuthenticated
   },
   {

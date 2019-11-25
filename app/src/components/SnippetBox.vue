@@ -129,8 +129,8 @@ export default {
 <style lang="scss" scoped>
 .snippet__box {
   flex: 1 1 25%;
-  max-width: calc(25% - 60px);
-  margin: 0 20px 20px 0px;
+  max-width: calc(25% - #{$box-gutter});
+  margin: 0 $box-gutter 20px 0px;
 
   .snippet__header {
     padding: 1rem 2rem 0 2rem;
@@ -216,6 +216,16 @@ export default {
         }
       }
     }
+  }
+
+  @media screen and (max-width: 768px) {
+    flex: 1 1 50%;
+    max-width: calc(50% - #{$box-gutter});
+  }
+
+  @media screen and (max-width: 480px) {
+    flex: 1 1 100%;
+    max-width: calc(100% - #{$box-gutter});
   }
 }
 </style>

@@ -1,4 +1,8 @@
 .content__wrap {
     position: relative;
     padding: $space-5 $space-7;
+
+    @media screen and (max-width: 480px) {
+        padding: $space-5 $space-2;
+    }
 }

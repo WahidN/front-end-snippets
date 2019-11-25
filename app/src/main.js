@@ -16,10 +16,10 @@ Vue.prototype.$http = axios;
 Vue.use(Vuelidate);
 Vue.use(VueCookie);
 
-// axios set header
+//axios set header
 axios.interceptors.request.use(
 	(config) => {
-		const token = store.getters["getToken"] || VueCookie.get('token');
+		const token = store.getters["getToken"];
 		if (token) {
 			axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 		}

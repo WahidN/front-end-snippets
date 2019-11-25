@@ -1,10 +1,10 @@
+/* eslint-disable prettier/prettier */
 import axios from "axios";
 import cookie from "vue-cookie";
-
-/* eslint-disable prettier/prettier */
 const state = {
 	status: '',
 	token: cookie.get('token') || "",
+	userEmail: null,
 	errors: []
 };
 
@@ -12,10 +12,25 @@ const getters = {
 	isAuthenticated: state => !!state.token,
 	authStatus: state => state.status,
 	getErrors: state => state.errors,
-	getToken: state => state.token
+	getToken: state => state.token,
+	getUserEmail: state => state.userEmail
 };
 
 const actions = {
+	async REGISTER({
+		commit
+	}, user) {
+		commit('AUTH_REQUEST');
+		try {
+			const result = await axios.post('http://localhost:3000/register', user);
+			commit('AUTH_SUCCESS', result.data)
+			return result;
+		} catch (error) {
+			console.log(error.response)
+			commit('AUTH_ERROR', error.response)
+			return error.response;
+		}
+	},
 	async LOGIN({
 		commit
 	}, user) {
@@ -25,7 +40,8 @@ const actions = {
 			cookie.set('token', result.data.token, {
 				expires: '8h'
 			});
-			commit('AUTH_SUCCESS', result.data.token)
+			commit('AUTH_SUCCESS', result.data)
+			console.log(result.data);
 			return result;
 		} catch (error) {
 			commit('AUTH_ERROR', error.response)
@@ -49,10 +65,11 @@ const mutations = {
 		state.status = 'loading'
 		state.errors = [];
 	},
-	AUTH_SUCCESS: (state, token) => {
+	AUTH_SUCCESS: (state, data) => {
 		state.status = 'success'
 		state.errors = [];
-		state.token = token
+		state.token = data.token;
+		state.userEmail = data.email;
 	},
 	AUTH_ERROR: (state, error) => {
 		state.status = 'error'

@@ -33,5 +33,14 @@ export default {
     padding: $space-5 $space-7;
     margin-left: 72px;
   }
+
+  @media screen and (max-width: 480px) {
+    .main-content {
+      margin-left: 0;
+      flex: 1 1 100%;
+      padding: $space-5 $space-3;
+      margin-bottom: $space-8;
+    }
+  }
 }
 </style>
