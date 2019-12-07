@@ -5,7 +5,9 @@
       :snippet="snippet"
       :showControls="false"
       :key="i"
+      @clickedSnippet="showSnippetDetail"
     />
+    <SnippetModal v-if="showSnippet" :snippetId="snippetId" @closeSnippet="hideSnippetDetail" />
   </div>
 </template>
 
@@ -14,12 +16,27 @@ import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Home",
+  data() {
+    return {
+      snippetId: null,
+      showSnippet: false
+    };
+  },
   components: {
-    SnippetBox: () => import("../components/SnippetBox.vue")
+    SnippetBox: () => import("../components/SnippetBox.vue"),
+    SnippetModal: () => import("../components/SnippetModal.vue")
   },
   computed: mapGetters(["GET_SNIPPETS"]),
   methods: {
-    ...mapActions(["fetchSnippets"])
+    ...mapActions(["fetchSnippets"]),
+    showSnippetDetail(id) {
+      this.snippetId = id;
+      this.showSnippet = true;
+    },
+    hideSnippetDetail() {
+      this.snippetId = null;
+      this.showSnippet = false;
+    }
   },
   created() {
     this.fetchSnippets();

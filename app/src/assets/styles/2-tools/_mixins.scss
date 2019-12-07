@@ -1,0 +1,5 @@
+// Mixing for shining skeleton loading
+@mixin background-gradient {
+    background-image: linear-gradient(90deg, $gray-9 0px, $gray-8 100px, $gray-9 150px);
+    background-size: cover;
+}

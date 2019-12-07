@@ -22,7 +22,7 @@ const actions = {
 	}, user) {
 		commit('AUTH_REQUEST');
 		try {
-			const result = await axios.post('http://localhost:3000/register', user);
+			const result = await axios.post(`${process.env.VUE_APP_URI}register`, user);
 			commit('AUTH_SUCCESS', result.data)
 			return result;
 		} catch (error) {
@@ -36,7 +36,7 @@ const actions = {
 	}, user) {
 		commit('AUTH_REQUEST');
 		try {
-			const result = await axios.post('http://localhost:3000/login', user);
+			const result = await axios.post(`${process.env.VUE_APP_URI}login`, user);
 			cookie.set('token', result.data.token, {
 				expires: '8h'
 			});
@@ -53,7 +53,7 @@ const actions = {
 	async LOGOUT({
 		commit
 	}) {
-		const result = await axios.post('http://localhost:3000/logout');
+		const result = await axios.post(`${process.env.VUE_APP_URI}logout`);
 		commit('AUTH_LOGOUT');
 		cookie.delete('token')
 		return result;

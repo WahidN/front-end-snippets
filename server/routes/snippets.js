@@ -7,7 +7,7 @@ const router = express.Router();
 
 router.get('/snippets', snippetController.getSnippets);
 
-router.get('/snippets/:id', snippetController.getSnippet);
+router.get('/snippet/:id', snippetController.getSnippet);
 
 router.get('/user-snippets', isAuth, snippetController.getUserSnippets);
 

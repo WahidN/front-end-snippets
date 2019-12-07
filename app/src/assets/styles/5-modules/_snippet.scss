@@ -1,0 +1,133 @@
+.snippet__box {
+    flex: 1 1 25%;
+    max-width: calc(25% - #{$box-gutter});
+    margin: 0 $box-gutter 20px 0px;
+    position: relative;
+
+    .snippet__header {
+        padding: $space-4 $space-6 0 $space-6;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        z-index: 1;
+        position: relative;
+
+        .language-tag {
+            padding: $space-1 $space-2;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            border-radius: 0.25rem;
+            display: inline-flex;
+
+            &.javascript {
+                background-color: #ecda73;
+                color: rgb(97, 83, 2);
+            }
+
+            &.css {
+                background-color: #60b6f7;
+                color: rgb(4, 50, 85);
+            }
+
+            &.Html {
+                background-color: #68d39f;
+                color: #01351c;
+            }
+        }
+
+        .snippet__controls {
+            display: flex;
+
+            .delete-snippet,
+            .edit-snippet {
+                cursor: pointer;
+                padding: $space-1 $space-2;
+                border-radius: $space-1;
+                border: none;
+                background-color: transparent;
+
+                svg {
+                    fill: $gray-8;
+                }
+
+                &:hover {
+                    background-color: $gray-9;
+                    transition: background-color .3s;
+
+                    svg {
+                        fill: $gray-6;
+                    }
+                }
+            }
+
+            .edit-snippet {
+                margin-left: $space-1;
+            }
+        }
+
+
+    }
+
+    .snippet__body {
+        padding: $space-3 $space-6;
+        margin-bottom: $space-7;
+
+        .snippet__title {
+            font-size: 1.5rem;
+            font-family: $font-family-heading;
+            font-weight: bold;
+        }
+
+        .snippet__description {
+            margin-top: 0.5rem;
+            color: rgb(110, 110, 110);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 3;
+            max-height: 9rem;
+        }
+    }
+
+    .snippet__footer {
+        padding: $space-3 $space-6;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .likes {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+
+            &:hover,
+            &.liked {
+                color: red;
+
+                .heartSVG path {
+                    fill: red;
+                }
+            }
+
+            .heartSVG {
+                margin-right: 5px;
+
+                path {
+                    fill: #cecece;
+                }
+            }
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        flex: 1 1 50%;
+        max-width: calc(50% - #{$box-gutter});
+    }
+
+    @media screen and (max-width: 480px) {
+        flex: 1 1 100%;
+        max-width: calc(100% - #{$box-gutter});
+    }
+}

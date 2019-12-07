@@ -24,7 +24,7 @@ const actions = {
         try {
             const {
                 data
-            } = await axios.get("http://localhost:3000/snippets");
+            } = await axios.get(`${process.env.VUE_APP_URI}snippets`);
             commit('setSnippets', data);
         } catch (error) {
             console.error("error in fetching snippets: ", error.message);
@@ -37,7 +37,7 @@ const actions = {
         try {
             const {
                 data
-            } = await axios.get("http://localhost:3000/user-snippets", {
+            } = await axios.get(`${process.env.VUE_APP_URI}user-snippets`, {
                 headers: {
                     'Authorization': `Bearer ${cookie.get('token')}`
                 }
@@ -57,14 +57,16 @@ const actions = {
         code
     }) {
         try {
-            console.log(title);
-
             const response = await axios.post(
-                "http://localhost:3000/snippets", {
+                `${process.env.VUE_APP_URI}snippets`, {
                     title: title,
                     description: description,
                     category: category,
                     code: code
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${cookie.get('token')}`
+                    }
                 }
             );
             if (response.status === 200) {
@@ -86,7 +88,7 @@ const actions = {
         commit
     }, Id) {
         await axios.delete(
-            "http://localhost:3000/snippets", {
+            `${process.env.VUE_APP_URI}snippets`, {
                 data: {
                     Id: Id
                 }
@@ -98,12 +100,12 @@ const actions = {
     async updateSnippet({
         commit
     }, newSnippet) {
-        console.log('store:', newSnippet);
-        await axios.put(
-            `http://localhost:3000/snippets/${newSnippet.Id}`, newSnippet
+        const result = await axios.put(
+            `${process.env.VUE_APP_URI}snippets/${newSnippet.Id}`, newSnippet
         );
 
-        commit("updateSnippet", newSnippet)
+        commit("updateSnippet", result.data);
+        return result;
     }
 };
 
@@ -111,7 +113,10 @@ const mutations = {
     setSnippets: (state, snippets) => state.snippets = snippets,
     setUserSnippets: (state, snippets) => state.userSnippets = snippets,
     newSnippet: (state, snippet) => state.snippets.unshift(snippet),
-    deleteSnippet: (state, Id) => state.snippets = state.snippets.filter(s => s._id !== Id),
+    deleteSnippet: (state, Id) => {
+        state.snippets = state.snippets.filter(s => s._id !== Id);
+        state.userSnippets = state.userSnippets.filter(s => s._id !== Id);
+    },
     filterByCategory: (state, category) => state.selectedCategory = category,
     updateSnippet: (state, newSnippet) => {
         let oldSnippet = state.snippets.find(s => s._id === newSnippet._id)

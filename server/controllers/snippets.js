@@ -2,15 +2,19 @@ const Snippet = require('../models/Snippet');
 const User = require('../models/User');
 
 exports.getSnippets = async (req, res, next) => {
-	const snippets = await Snippet.find();
-	res.send(snippets);
+	const snippets = await Snippet.find().sort({
+		_id: -1
+	});
+	res.status(200).send(snippets);
 };
 
 exports.getUserSnippets = async (req, res, next) => {
 	const snippets = await Snippet.find({
 		author: req.userId
+	}).sort({
+		_id: -1
 	});
-	res.send(snippets);
+	res.status(200).send(snippets);
 };
 
 exports.addSnippet = (req, res, next) => {
@@ -20,7 +24,7 @@ exports.addSnippet = (req, res, next) => {
 		code: req.body.code,
 		category: req.body.category,
 		author: req.userId,
-		likes: 0
+		likedBy: []
 	});
 	snippet
 		.save()
@@ -68,7 +72,6 @@ exports.updateSnippet = (req, res, next) => {
 	const newDescription = req.body.description;
 	const newCode = req.body.code;
 	const newCategory = req.body.category;
-	const newLikes = req.body.likes;
 
 	Snippet.findById(id)
 		.then(snippet => {
@@ -76,21 +79,28 @@ exports.updateSnippet = (req, res, next) => {
 			snippet.description = newDescription;
 			snippet.code = newCode;
 			snippet.category = newCategory;
-			snippet.likes = newLikes;
 			return snippet.save();
 		})
-		.then(result => {
-			console.log(result);
+		.then(newSnippet => {
+			res.status(200).send(newSnippet);
 		})
 		.catch(error => {
-			console.error(error);
+			res.status(404).send({
+				error: 'Snippet not found'
+			});
 		});
 };
 
-exports.getSnippet = (req, res, next) => {
-	const id = req.params.snippetId;
-	res.json({
-		message: 'Showing post',
-		Id: id
+exports.getSnippet = async (req, res, next) => {
+	const id = req.params.id;
+	const snippet = await Snippet.findById(id);
+	if (!snippet) {
+		res.status(404).json({
+			message: 'Snippet not found!'
+		});
+	}
+
+	res.status(200).json({
+		snippet: snippet
 	});
 };

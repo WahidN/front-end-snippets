@@ -1,12 +1,17 @@
 <template>
-  <div class="snippet__box card">
+  <div class="snippet__box card" @click="showSnippet">
     <div class="snippet__header">
-      <div class="language-tag" v-bind:class="categoryName.toLowerCase()">{{ categoryName }}</div>
+      <div class="language-tag" v-bind:class="snippet.category">{{ snippet.category }}</div>
       <div class="snippet__controls" v-if="showControls">
-        <div class="delete-snippet" v-on:click="removeSnippet">
+        <button
+          role="button"
+          aria-label="delete snippet"
+          class="delete-snippet"
+          @click.stop="removeSnippet"
+        >
           <svg
             version="1.1"
-            width="25"
+            width="15px"
             xmlns="http://www.w3.org/2000/svg"
             xmlns:xlink="http://www.w3.org/1999/xlink"
             x="0px"
@@ -30,7 +35,32 @@
               />
             </g>
           </svg>
-        </div>
+        </button>
+        <button
+          role="button"
+          aria-label="edit snippet"
+          class="edit-snippet"
+          @click.stop="editSnippet"
+        >
+          <svg
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            x="0px"
+            y="0px"
+            width="15px"
+            viewBox="0 0 528.899 528.899"
+            style="enable-background:new 0 0 528.899 528.899;"
+            xml:space="preserve"
+          >
+            <path
+              d="M328.883,89.125l107.59,107.589l-272.34,272.34L56.604,361.465L328.883,89.125z M518.113,63.177l-47.981-47.981
+		c-18.543-18.543-48.653-18.543-67.259,0l-45.961,45.961l107.59,107.59l53.611-53.611
+		C532.495,100.753,532.495,77.559,518.113,63.177z M0.3,512.69c-1.958,8.812,5.998,16.708,14.811,14.565l119.891-29.069
+		L27.473,390.597L0.3,512.69z"
+            />
+          </svg>
+        </button>
       </div>
     </div>
     <div class="snippet__body">
@@ -40,7 +70,11 @@
       </div>
     </div>
     <div class="snippet__footer">
-      <div class="likes" @click="addLike" :class="{ liked: liked }">
+      <div
+        class="likes"
+        @click.stop="addLike"
+        :class="{ liked: liked, disabled: !isAuthenticated }"
+      >
         <svg
           version="1.1"
           width="15"
@@ -60,7 +94,7 @@
 			C474.988,241.811,492.719,206.017,492.719,166.008z"
           />
         </svg>
-        {{ snippet.likes }}
+        {{ snippet.likedBy.length }}
       </div>
       <div class="author">
         <div class="author__pic"></div>
@@ -70,7 +104,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   name: "SnippetBox",
@@ -86,11 +120,7 @@ export default {
     };
   },
   computed: {
-    categoryName() {
-      return this.snippet.category === "javascript"
-        ? "JS"
-        : this.snippet.category;
-    }
+    ...mapGetters(["isAuthenticated"])
   },
   methods: {
     ...mapActions(["deleteSnippet", "updateSnippet"]),
@@ -105,8 +135,7 @@ export default {
           title: this.snippet.title,
           description: this.snippet.description,
           code: this.snippet.code,
-          category: this.snippet.category,
-          likes: --this.snippet.likes
+          category: this.snippet.category
         };
       } else {
         newSnippet = {
@@ -114,13 +143,16 @@ export default {
           title: this.snippet.title,
           description: this.snippet.description,
           code: this.snippet.code,
-          category: this.snippet.category,
-          likes: ++this.snippet.likes
+          category: this.snippet.category
         };
       }
-      console.log("component: ", newSnippet);
       this.updateSnippet(newSnippet);
-      this.liked = !this.liked;
+    },
+    showSnippet() {
+      this.$emit("clickedSnippet", this.snippet._id);
+    },
+    editSnippet() {
+      this.$emit("editSnippet", this.snippet._id);
     }
   }
 };
@@ -128,104 +160,12 @@ export default {
 
 <style lang="scss" scoped>
 .snippet__box {
-  flex: 1 1 25%;
-  max-width: calc(25% - #{$box-gutter});
-  margin: 0 $box-gutter 20px 0px;
+  cursor: pointer;
 
-  .snippet__header {
-    padding: 1rem 2rem 0 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-
-    .language-tag {
-      padding: 2px 5px;
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      border-radius: 0.25rem;
-      display: inline-flex;
-
-      &.js {
-        background-color: #ecda73;
-        color: rgb(97, 83, 2);
-      }
-
-      &.css {
-        background-color: #60b6f7;
-        color: rgb(4, 50, 85);
-      }
-
-      &.html {
-        background-color: #68d39f;
-        color: #01351c;
-      }
-    }
-
-    .delete-snippet {
-      cursor: pointer;
-
-      svg {
-        fill: $gray-8;
-      }
-    }
-  }
-
-  .snippet__body {
-    padding: 1rem 2rem;
-
-    .snippet__title {
-      font-size: 1.5rem;
-      font-family: $font-family-heading;
-      font-weight: bold;
-    }
-
-    .snippet__description {
-      margin-top: 0.5rem;
-      color: rgb(110, 110, 110);
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 3;
-      max-height: 9rem;
-    }
-  }
-
-  .snippet__footer {
-    padding: 1rem 2rem;
-
-    .likes {
-      display: inline-flex;
-      align-items: center;
-      cursor: pointer;
-
-      &:hover,
-      &.liked {
-        color: red;
-
-        .heartSVG path {
-          fill: red;
-        }
-      }
-
-      .heartSVG {
-        margin-right: 5px;
-
-        path {
-          fill: #cecece;
-        }
-      }
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    flex: 1 1 50%;
-    max-width: calc(50% - #{$box-gutter});
-  }
-
-  @media screen and (max-width: 480px) {
-    flex: 1 1 100%;
-    max-width: calc(100% - #{$box-gutter});
+  &:hover {
+    box-shadow: 1em 1em 1em 0em rgba(10, 10, 10, 0.1),
+      0 0 5px 1px rgba(10, 10, 10, 0.02);
+    transition: box-shadow 0.3s ease-in-out;
   }
 }
 </style>

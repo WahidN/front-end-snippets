@@ -1,6 +1,8 @@
 // 1 - HELPERS
+@import './1-helpers/classHelpers';
 
 // 2 - TOOLS
+@import './2-tools/animations';
 
 // 3 - BASICS
 @import './3-basics/reset';
@@ -11,6 +13,7 @@
 
 // 5 - MODULES
 @import './5-modules/card';
+@import './5-modules/snippet';
 
 // Overrides
 @import './bulma-overrides';
