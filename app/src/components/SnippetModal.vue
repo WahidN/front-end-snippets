@@ -52,6 +52,10 @@
           <div class="author">
             <div class="author__pic"></div>
           </div>
+          <div class="clipboard" @click="copyCode">
+            <span class="has-text-success" v-if="copied">Copied to clipboard!</span>
+            <i class="material-icons">assignment</i>
+          </div>
         </div>
       </div>
     </div>
@@ -68,7 +72,8 @@ export default {
     return {
       snippet: {},
       liked: false,
-      loading: true
+      loading: true,
+      copied: false
     };
   },
   props: {
@@ -87,6 +92,40 @@ export default {
     },
     closeModal() {
       this.$emit("closeSnippet");
+      this.copied = false;
+    },
+    copyCode() {
+      try {
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(this.snippet.code);
+        } else if (window.clipboardData) {
+          // IE
+          window.clipboardData.setData("text", this.snippet.code);
+        } else {
+          // other browsers, iOS, Mac OS
+          this.copyToClipboard();
+        }
+
+        this.copied = true;
+      } catch (e) {
+        alert("Please copy coupon manually.");
+      }
+    },
+    copyToClipboard() {
+      // Create new element
+      var el = document.createElement("textarea");
+      // Set value (string to be copied)
+      el.value = this.snippet.code;
+      // Set non-editable to avoid focus and move outside of view
+      el.setAttribute("readonly", "");
+      el.style = { position: "absolute", left: "-9999px" };
+      document.body.appendChild(el);
+      // Select text inside element
+      el.select();
+      // Copy text to clipboard
+      document.execCommand("copy");
+      // Remove temporary element
+      document.body.removeChild(el);
     }
   },
   mounted() {
@@ -116,6 +155,21 @@ export default {
   .snippet__code {
     max-height: 600px;
     overflow: auto;
+  }
+
+  .clipboard {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-right: 5px;
+    }
+  }
+
+  .snippet__footer {
+    display: flex;
+    justify-content: space-between;
   }
 
   .snippet__description {

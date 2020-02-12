@@ -39,9 +39,9 @@ exports.addSnippet = (req, res, next) => {
 			res.status(200).send(`Snippet ${req.body.name} successfully added!`);
 		})
 		.catch(err => {
-			console.log(err);
 			res.status(500).send({
-				error: '500'
+				error: '500',
+				message: err.message
 			});
 		});
 };
@@ -61,7 +61,8 @@ exports.deleteSnippet = (req, res, next) => {
 		})
 		.catch(err => {
 			res.status(404).send({
-				error: 'Snippet not found'
+				error: 'Snippet not found',
+				message: err.message
 			});
 		});
 };
@@ -72,6 +73,7 @@ exports.updateSnippet = (req, res, next) => {
 	const newDescription = req.body.description;
 	const newCode = req.body.code;
 	const newCategory = req.body.category;
+	const newLikes = req.body.likes;
 
 	Snippet.findById(id)
 		.then(snippet => {
@@ -79,6 +81,7 @@ exports.updateSnippet = (req, res, next) => {
 			snippet.description = newDescription;
 			snippet.code = newCode;
 			snippet.category = newCategory;
+			snippet.likes = newLikes;
 			return snippet.save();
 		})
 		.then(newSnippet => {
@@ -86,7 +89,8 @@ exports.updateSnippet = (req, res, next) => {
 		})
 		.catch(error => {
 			res.status(404).send({
-				error: 'Snippet not found'
+				error: 'Snippet not found',
+				message: error.message
 			});
 		});
 };

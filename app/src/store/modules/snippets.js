@@ -100,12 +100,17 @@ const actions = {
     async updateSnippet({
         commit
     }, newSnippet) {
-        const result = await axios.put(
-            `${process.env.VUE_APP_URI}snippets/${newSnippet.Id}`, newSnippet
-        );
+        try {
+            const result = await axios.put(
+                `${process.env.VUE_APP_URI}snippets/${newSnippet.id}`, newSnippet
+            );
 
-        commit("updateSnippet", result.data);
-        return result;
+            commit("updateSnippet", result.data);
+            return result;
+        } catch (error) {
+            console.error(error.message)
+        }
+
     }
 };
 

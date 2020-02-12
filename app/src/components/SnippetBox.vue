@@ -94,7 +94,7 @@
 			C474.988,241.811,492.719,206.017,492.719,166.008z"
           />
         </svg>
-        {{ snippet.likedBy.length }}
+        {{ snippet.likes }}
       </div>
       <div class="author">
         <div class="author__pic"></div>
@@ -128,24 +128,16 @@ export default {
       this.deleteSnippet(this.snippet._id);
     },
     addLike() {
-      let newSnippet;
-      if (this.liked) {
-        newSnippet = {
-          Id: this.snippet._id,
-          title: this.snippet.title,
-          description: this.snippet.description,
-          code: this.snippet.code,
-          category: this.snippet.category
-        };
-      } else {
-        newSnippet = {
-          Id: this.snippet._id,
-          title: this.snippet.title,
-          description: this.snippet.description,
-          code: this.snippet.code,
-          category: this.snippet.category
-        };
-      }
+      this.liked = !this.liked;
+      let newSnippet = {
+        id: this.snippet._id,
+        title: this.snippet.title,
+        description: this.snippet.description,
+        code: this.snippet.code,
+        category: this.snippet.category,
+        likes: (this.snippet.likes += 1)
+      };
+      console.log(newSnippet);
       this.updateSnippet(newSnippet);
     },
     showSnippet() {

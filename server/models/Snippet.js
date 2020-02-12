@@ -18,10 +18,9 @@ const snippetSchema = new Schema({
         type: String,
         required: true
     },
-    likedBy: [{
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }],
+    likes: {
+        type: Number
+    },
     author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
