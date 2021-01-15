@@ -1,10 +1,10 @@
 /* eslint-disable prettier/prettier */
 import axios from "axios";
 import cookie from "vue-cookie";
+
 const state = {
 	status: '',
 	token: cookie.get('token') || "",
-	userEmail: null,
 	errors: []
 };
 
@@ -13,7 +13,6 @@ const getters = {
 	authStatus: state => state.status,
 	getErrors: state => state.errors,
 	getToken: state => state.token,
-	getUserEmail: state => state.userEmail
 };
 
 const actions = {
@@ -41,7 +40,6 @@ const actions = {
 				expires: '8h'
 			});
 			commit('AUTH_SUCCESS', result.data)
-			console.log(result.data);
 			return result;
 		} catch (error) {
 			commit('AUTH_ERROR', error.response)
@@ -57,7 +55,7 @@ const actions = {
 		commit('AUTH_LOGOUT');
 		cookie.delete('token')
 		return result;
-	}
+	},
 };
 
 const mutations = {
@@ -69,7 +67,7 @@ const mutations = {
 		state.status = 'success'
 		state.errors = [];
 		state.token = data.token;
-		state.userEmail = data.email;
+		localStorage.setItem("userEmail", data.email);
 	},
 	AUTH_ERROR: (state, error) => {
 		state.status = 'error'
@@ -77,6 +75,7 @@ const mutations = {
 	},
 	AUTH_LOGOUT: (state) => {
 		state.token = "";
+		localStorage.removeItem("userEmail");
 	}
 };
 

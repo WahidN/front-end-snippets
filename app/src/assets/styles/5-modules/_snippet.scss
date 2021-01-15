@@ -121,13 +121,19 @@
         }
     }
 
-    @media screen and (max-width: 768px) {
+    @media screen and (max-width: 1366px) {
+        flex: 1 1 33%;
+        max-width: calc(33% - #{$box-gutter});
+    }
+
+    @media screen and (max-width: 920px) {
         flex: 1 1 50%;
         max-width: calc(50% - #{$box-gutter});
     }
 
-    @media screen and (max-width: 480px) {
+    @media screen and (max-width: 680px) {
         flex: 1 1 100%;
-        max-width: calc(100% - #{$box-gutter});
+        max-width: 100%;
+        margin: 10px 0;
     }
 }

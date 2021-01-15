@@ -71,6 +71,7 @@ exports.login = (req, res, next) => {
 				res.status(400).json({
 					errorMessage: 'User with that email not found!'
 				});
+				return;
 			}
 			loadedUser = user;
 			return bcrypt.compare(password, user.password);
@@ -103,6 +104,31 @@ exports.login = (req, res, next) => {
 			next(error);
 		});
 };
+
+exports.addFavorite = (req, res, next) => {
+	User.findById(req.userId)
+	.then(user => {
+		if (!user) {
+			res.status(400).json({
+				errorMessage: 'User not found!'
+			});
+			return;
+		}
+		if (user.likedPosts.includes(req.body.snippetId)) {
+			const snippetIndex = user.likedPosts.indexOf(req.body.snippetId);
+			user.likedPosts.splice(snippetIndex, 1);
+		} else {
+			user.likedPosts.push(req.body.snippetId);
+		}
+		return user.save();
+	})
+	.catch(error => {
+		if (!error.status) {
+			error.status = 500;
+		}
+		next(error);
+	});
+}
 
 exports.logout = (req, res, next) => {
 	req.userId = null;

@@ -2,10 +2,17 @@ const Snippet = require('../models/Snippet');
 const User = require('../models/User');
 
 exports.getSnippets = async (req, res, next) => {
+	const skipped = parseInt(req.query.skip) || 0;
+	const limit = parseInt(req.query.limit) || 16;
+	const total = await Snippet.find().countDocuments((err, count) => {
+		if (err) {
+			throw err;
+		}
+	});
 	const snippets = await Snippet.find().sort({
 		_id: -1
-	});
-	res.status(200).send(snippets);
+	}).skip(skipped).limit(limit);
+	res.status(200).send({total, snippets});
 };
 
 exports.getUserSnippets = async (req, res, next) => {
@@ -24,7 +31,7 @@ exports.addSnippet = (req, res, next) => {
 		code: req.body.code,
 		category: req.body.category,
 		author: req.userId,
-		likedBy: []
+		likes: 0
 	});
 	snippet
 		.save()
@@ -54,6 +61,7 @@ exports.deleteSnippet = (req, res, next) => {
 		})
 		.then(user => {
 			user.posts.pull(id);
+			user.likedPosts.pull(id);
 			return user.save();
 		})
 		.then(() => {
@@ -108,3 +116,11 @@ exports.getSnippet = async (req, res, next) => {
 		snippet: snippet
 	});
 };
+
+exports.getFavSnippets = async (req, res, next) => {
+	const user = await User.findById(req.userId, 'likedPosts').exec();
+	if (!user) {
+		return;
+	}
+	res.status(200).send(user.likedPosts);
+}

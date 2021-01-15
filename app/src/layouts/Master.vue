@@ -11,12 +11,22 @@
 
 <script>
 import Nav from "./partials/Nav.vue";
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   components: {
     Nav
+  },
+  computed: {
+    ...mapGetters(["isAuthenticated"])
+  },
+  methods: {
+    ...mapActions(["getFavSnippets"])
+  },
+  beforeUpdate() {
+    if (this.isAuthenticated) {
+      this.getFavSnippets();
+    }
   }
 };
 </script>
-
-<style>
-</style>

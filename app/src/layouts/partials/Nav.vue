@@ -17,7 +17,7 @@
             <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
               <i class="material-icons">account_circle</i>
             </button>
-            <span>{{ getUserEmail }}</span>
+            <span>{{ userEmail }}</span>
           </div>
           <div class="dropdown-menu" id="dropdown-menu" role="menu">
             <div class="dropdown-content">
@@ -75,11 +75,12 @@ export default {
   data() {
     return {
       profileDropdown: false,
-      activeCategory: null
+      activeCategory: null,
+      userEmail: ""
     };
   },
   computed: {
-    ...mapGetters(["isAuthenticated", "ACTIVE_CATEGORY", "getUserEmail"])
+    ...mapGetters(["isAuthenticated", "ACTIVE_CATEGORY"])
   },
   methods: {
     selectCategory(value) {
@@ -91,6 +92,11 @@ export default {
         this.$router.push("/");
       });
     }
+  },
+  mounted() {
+    if (this.isAuthenticated) {
+      this.userEmail = localStorage.getItem("userEmail");
+    }
   }
 };
 </script>
@@ -101,6 +107,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 
   .nav__logo {
     h1 {

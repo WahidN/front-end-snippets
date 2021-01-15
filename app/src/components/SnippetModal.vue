@@ -25,28 +25,6 @@
           <div class="skeleton skeleton-code" v-if="loading"></div>
         </div>
         <div class="snippet__footer">
-          <div v-if="!loading" class="likes" :class="{ liked: liked }">
-            <svg
-              version="1.1"
-              width="15"
-              xmlns="http://www.w3.org/2000/svg"
-              xmlns:xlink="http://www.w3.org/1999/xlink"
-              x="0px"
-              y="0px"
-              viewBox="0 0 492.719 492.719"
-              style="enable-background:new 0 0 492.719 492.719;"
-              xml:space="preserve"
-              class="heartSVG"
-            >
-              <path
-                d="M492.719,166.008c0-73.486-59.573-133.056-133.059-133.056c-47.985,0-89.891,25.484-113.302,63.569
-			c-23.408-38.085-65.332-63.569-113.316-63.569C59.556,32.952,0,92.522,0,166.008c0,40.009,17.729,75.803,45.671,100.178
-			l188.545,188.553c3.22,3.22,7.587,5.029,12.142,5.029c4.555,0,8.922-1.809,12.142-5.029l188.545-188.553
-			C474.988,241.811,492.719,206.017,492.719,166.008z"
-              />
-            </svg>
-            {{ snippet.likes }}
-          </div>
           <div class="skeleton skeleton-likes" v-if="loading"></div>
 
           <div class="author">
@@ -85,7 +63,7 @@ export default {
   methods: {
     async getSnippet() {
       const { data } = await this.$http.get(
-        `http://localhost:3000/snippet/${this.snippetId}`
+        `http://localhost:3300/snippet/${this.snippetId}`
       );
       this.snippet = data.snippet;
       this.loading = false;
@@ -175,7 +153,15 @@ export default {
   .snippet__description {
     margin-top: 0;
     margin-bottom: $space-4;
+    max-height: 100%;
+    text-overflow: unset;
+    -webkit-line-clamp: unset;
   }
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 1200px;
 }
 
 .modal-close {

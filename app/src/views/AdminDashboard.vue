@@ -51,7 +51,7 @@ export default {
     }
   },
   created() {
-    this.fetchUserSnippets();
+    this.fetchUserSnippets({ skip: 0, take: 100 });
   }
 };
 </script>

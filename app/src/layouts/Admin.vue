@@ -11,10 +11,22 @@
 
 <script>
 import SideBar from "./partials/SideBar.vue";
+import { mapActions, mapGetters } from "vuex";
 
 export default {
   components: {
     SideBar
+  },
+  computed: {
+    ...mapGetters(["isAuthenticated"])
+  },
+  methods: {
+    ...mapActions(["getFavSnippets"])
+  },
+  beforeUpdate() {
+    if (this.isAuthenticated) {
+      this.getFavSnippets();
+    }
   }
 };
 </script>

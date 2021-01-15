@@ -11,6 +11,8 @@ router.get('/snippet/:id', snippetController.getSnippet);
 
 router.get('/user-snippets', isAuth, snippetController.getUserSnippets);
 
+router.get('/favsnippets', isAuth, snippetController.getFavSnippets);
+
 router.post('/snippets', isAuth, snippetController.addSnippet);
 
 router.put('/snippets/:id', isAuth, snippetController.updateSnippet);

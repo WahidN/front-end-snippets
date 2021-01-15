@@ -1,7 +1,9 @@
 <template>
   <div class="snippet__box card" @click="showSnippet">
     <div class="snippet__header">
-      <div class="language-tag" v-bind:class="snippet.category">{{ snippet.category }}</div>
+      <div class="language-tag" v-bind:class="snippet.category">
+        {{ snippet.category }}
+      </div>
       <div class="snippet__controls" v-if="showControls">
         <button
           role="button"
@@ -17,7 +19,7 @@
             x="0px"
             y="0px"
             viewBox="0 0 408.483 408.483"
-            style="enable-background:new 0 0 408.483 408.483;"
+            style="enable-background: new 0 0 408.483 408.483"
             xml:space="preserve"
           >
             <g>
@@ -50,7 +52,7 @@
             y="0px"
             width="15px"
             viewBox="0 0 528.899 528.899"
-            style="enable-background:new 0 0 528.899 528.899;"
+            style="enable-background: new 0 0 528.899 528.899"
             xml:space="preserve"
           >
             <path
@@ -83,7 +85,7 @@
           x="0px"
           y="0px"
           viewBox="0 0 492.719 492.719"
-          style="enable-background:new 0 0 492.719 492.719;"
+          style="enable-background: new 0 0 492.719 492.719"
           xml:space="preserve"
           class="heartSVG"
         >
@@ -105,6 +107,8 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import axios from "axios";
+import cookie from "vue-cookie";
 
 export default {
   name: "SnippetBox",
@@ -120,7 +124,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["isAuthenticated"])
+    ...mapGetters(["isAuthenticated", "FAV_SNIPPETS"])
   },
   methods: {
     ...mapActions(["deleteSnippet", "updateSnippet"]),
@@ -128,24 +132,47 @@ export default {
       this.deleteSnippet(this.snippet._id);
     },
     addLike() {
-      this.liked = !this.liked;
+      if (this.liked) {
+        this.liked = false;
+        this.snippet.likes--;
+      } else {
+        this.liked = true;
+        this.snippet.likes++;
+      }
       let newSnippet = {
-        id: this.snippet._id,
+        Id: this.snippet._id,
         title: this.snippet.title,
         description: this.snippet.description,
         code: this.snippet.code,
         category: this.snippet.category,
-        likes: (this.snippet.likes += 1)
+        likes: this.snippet.likes,
       };
-      console.log(newSnippet);
       this.updateSnippet(newSnippet);
+      this.addFavorite(this.snippet._id);
     },
     showSnippet() {
       this.$emit("clickedSnippet", this.snippet._id);
     },
     editSnippet() {
       this.$emit("editSnippet", this.snippet._id);
+    },
+    async addFavorite(snippetId) {
+      const result = await axios.post(
+        `${process.env.VUE_APP_URI}addFavorite`,
+        {
+          snippetId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${cookie.get("token")}`,
+          },
+        }
+      );
+      return result;
     }
+  },
+  mounted() {
+        this.liked = this.FAV_SNIPPETS.some(s => s === this.snippet._id);
   }
 };
 </script>
